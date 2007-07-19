@@ -11,137 +11,205 @@ elseif exists("b:current_syntax")
 endif
 
 syn sync fromstart
+syn sync linebreaks=1
 
-syn match asciidocBold /\*[^*]\+\*/
-syn match asciidocEmphasize /_[^_]\+_/
+syn match asciidocCallout "<\d\d\?>"
+syn match asciidocBackslash "\\"
+syn match asciidocIdMarker "^$Id:\s\S\+\s\$$"
+syn match asciidocLineBreak "[ \t]+$"
+syn match asciidocRuler "^''''\+$"
+
+syn match asciidocBold "\*[^*]\+\*"
+syn match asciidocEmphasize "_[^_]\+_"
 "FIXME: Emphasizing using single quotes is prone to failure, so we disable it.
-"syn match asciidocEmphasize /'[^']\+'/
-"syn region asciidocEmphasize start="\'\{1}[^\']"  end="\'\{1}\([^\']\|$\)"
-syn match asciidocMonospace /+[^+]\++/
-syn match asciidocMonospace /`[^`]\+`/
-syn match asciidocPassthrough /\$\$.\+\$\$/
-syn match asciidocBullet /^\s*[\*\-]\s/
-syn match asciidocNumItem /^\s*\d\+[.)]\s/
-syn match asciidocBiblio /^\s*+\s\+/
-syn match asciidocSource /^\s\s*\$\s\+.\+$/
-syn keyword asciidocTodo TODO FIXME XXX contained
-syn match asciidocEmail /\S\+@\S\+\(.\S+\)*/
-syn match asciidocSpecialChar /{amp}\w+;/
-syn match asciidocAdmonitionNote /^\(NOTE\|TIP\):/
-syn match asciidocAdmonitionWarn /^\(CAUTION\|IMPORTANT\|WARNING\):/
-syn match asciidocAdmonitionNote /^\[\(NOTE\|TIP\)\]\s*$/
-syn match asciidocAdmonitionWarn /^\[\(CAUTION\|IMPORTANT\|WARNING\)\]\s*$/
+"syn match asciidocEmphasize "'[^']\+'"
+"syn region asciidocEmphasize start="\'[^\']"  end="\'\([^\']\|$\)"
+syn match asciidocMonospace "+[^+]\++"
+syn match asciidocMonospace "`[^`]\+`"
+syn region asciidocSubscript start="\~\S" end="\(\~\|^$\)"
+syn region asciidocSuperscript start="\^\S" end="\(\^\|^$\)"
+syn match asciidocPassthrough "\$\$.\+\$\$"
+syn match asciidocBiblio "^\s*+\s\+"
+syn match asciidocSource "^\s\s*\$\s\+.\+$"
+syn keyword asciidocTodo TODO FIXME XXX ZZZ contained
+"syn match asciidocReplacements "[\s^]\(\(C\)\|\(TM\)\|\(R\)\|--\|\.\.\.\)[\s$]"
+syn match asciidocEmail "\S\+@\S\+\(.\S+\)*"
+syn match asciidocSpecialChar "{amp}\w+;"
+syn match asciidocAdmonitionNote "^\(NOTE\|TIP\):\(\s\+.*\)\@="
+syn match asciidocAdmonitionWarn "^\(CAUTION\|IMPORTANT\|WARNING\):\(\s\+.*\)\@="
+syn match asciidocAdmonitionNote "^\[\(NOTE\|TIP\)\]\s*$"
+syn match asciidocAdmonitionWarn "^\[\(CAUTION\|IMPORTANT\|WARNING\)\]\s*$"
 
-syn region asciidocAttribute start="^:" end=":\s\+"
-syn region asciidocAttributeList start="^\[" end="\]\s*$" oneline
-syn region asciidocSect0 start="^=[^=]" end="$" oneline
-syn region asciidocSect1 start="^==[^=]" end="$" oneline 
-syn region asciidocSect2 start="^===[^=]" end="$" oneline
-syn region asciidocSect3 start="^====[^=]" end="$" oneline
-syn region asciidocSect4 start="^=====[^=]" end="$" oneline
+"Attributes
+syn region asciidocAttributeEntry start="^:\a" end=":\(\s\|$\)" oneline
+"syn region asciidocAttributeEntry start="^:" end=":\s\+$" oneline
+syn match asciidocAttributeList "^\[[^[ \t].*\]$"
+"syn region asciidocAttributeList start="^\[" end="\]\s*$" oneline
+syn match asciidocAttributeRef "{\(\w\|-\)\+}"
+
+"Macros
+syn region asciidocMacroAttributes matchgroup=asciidocRefMacro start="<<\w\(\w\|-\)*,\?" end=">>"
+syn region asciidocMacroAttributes matchgroup=asciidocAnchorMacro start="\[\[\(\w\|-\)\+,\?" end="\]\]"
+syn region asciidocMacroAttributes matchgroup=asciidocAnchorMacro start="\[\[\[\(\w\|-\)\+" end="\]\]\]"
+syn region asciidocMacroAttributes matchgroup=asciidocMacro start="\w\(\w\|-\)*:\S\{-}\[" skip="\\\]" end="\]"
+syn region asciidocMacroAttributes matchgroup=asciidocIndexTerm start="(((?" end=")))\?"
+"syn match asciidocMacro "\[\[.*\]\]"
+"syn match asciidocMacro "((.*))"
+"syn match asciidocReference "<<\w\+>>"
+"syn match asciidocReference "<<\w\+,.\+>>"
+
+"Lists
+syn match asciidocListBullet "^\s*[*+-]\s"
+syn match asciidocListContinuation "^+$"
+"syn match asciidocListNumber "^\s*\d\+[.)]\s"
+syn match asciidocListNumber /^\s*\(\d*\.\.\?\|\l\?)\|\w\.\)\s\+/
+
+"Sections
+syn region asciidocSect0 start="^=\s\+\S" end="$" oneline
+syn region asciidocSect1 start="^==\s\+\S" end="$" oneline 
+syn region asciidocSect2 start="^===\s\+\S" end="$" oneline
+syn region asciidocSect3 start="^====\s\+\S" end="$" oneline
+syn region asciidocSect4 start="^=====\s\+\S" end="$" oneline
 
 "FIXME: It is impossible to distinguish underlined titles from block delimiters
 "       because we cannot calculate length in VIM syntax
-"syn region asciidocSectOld0 start="^=" end="=$" oneline
-"syn region asciidocSectOld1 start="^-" end="-$" oneline
-"syn region asciidocSectOld2 start="^\~" end="\~$" oneline
-"syn region asciidocSectOld3 start="^\^" end="\^$" oneline
-"syn region asciidocSectOld4 start="^+" end="+$" oneline
-"syn match asciidocSectOld0 /^===\+$/
-"syn match asciidocSectOld1 /^---\+$/
-"syn match asciidocSectOld2 /^\~\~\~\+$/
-"syn match asciidocSectOld3 /^\^\^\^\+$/
-"syn match asciidocSectOld4 /^+++\+$/
-syn region asciidocDefinition start="^" end="::\s*$" oneline
-syn region asciidocGlossary start="^" end=":-\s*$" oneline
-syn match asciidocReference /<<\w\+>>/
-syn match asciidocReference /<<\w\+,.\+>>/
-syn match asciidocFootnote /footnote:\[.*\]/
-syn match asciidocLink /link:.*\[.*\]/
-syn match asciidocURI /\(file\|ftp\|gopher\|http\|https\|mailto\|news\|xref\):.*\[.*\]/
-syn match asciidocInclude /include::.*\[\]/
-syn match asciidocInclude /image:.*\[.*\]/
-syn match asciidocInclude /image::.*\[.*\]/
-syn match asciidocInclude /footnote:\[.*\]/
-syn match asciidocInclude /indexterm:\[.*\]/
-syn match asciidocInclude /ifdef::.*\[\]/
-syn match asciidocInclude /endif::.*\[\]/
-syn match asciidocMacro /\[\[.*\]\]/
-syn match asciidocMacro /((.*))/
-syn match asciidocComment /^\ *\/\/.*$/ contains=asciidocTodo
-syn region asciidocComment start="^\s*#" end="$" oneline
+syn match asciidocSect0Old "^[^. +/[].*[^.:]\n==\+$"
+syn match asciidocSect1Old "^[^. +/[].*[^.:]\n--\+$"
+syn match asciidocSect2Old "^[^. +/[].*[^.:]\n\~\~\+$"
+syn match asciidocSect3Old "^[^. +/[].*[^.:]\n^^\+$"
+syn match asciidocSect4Old "^[^. +/[].*[^.:]\n++\+$"
+
+syn region asciidocDefinition start="\S" end="::\s*$" oneline
+syn region asciidocQuestion start="\S" end="??\s*$" oneline
+syn region asciidocGlossary start="\S" end=":-\s*$" oneline
+"syn match asciidocFootnote "footnote:\[.*\]"
+"syn match asciidocLink "link:.*\[.*\]"
+"syn match asciidocURI "\(callto\|file\|ftp\|gopher\|http\|https\|mailto\|news\|xref\):.*\[\]"
+"syn match asciidocURITitle "\(callto\|file\|ftp\|gopher\|http\|https\|mailto\|news\|xref\):.*\[.*\]"
+"syn match asciidocInclude "include::.*\[.*\]"
+"syn match asciidocInclude "include1::.*\[.*\]"
+"syn match asciidocInclude "image:.*\[.*\]"
+"syn match asciidocInclude "image::.*\[.*\]"
+"syn match asciidocInclude "footnote:\[.*\]"
+"syn match asciidocInclude "indexterm:\[.*\]"
+"syn match asciidocInclude "ifdef::.*\[\]"
+"syn match asciidocInclude "ifndef::.*\[\]"
+"syn match asciidocInclude "endif::.*\[\]"
+"syn match asciidocInclude "eval::\[\]"
+"syn match asciidocInclude "sys::\[\]"
+"syn match asciidocInclude "sys2::\[\]"
+
+"Blocks
+syn match asciidocBlockTitle "^\.[^. \t].*[^-~_]$"
+"syn region asciidocBlockTitle start="^\.\S.\+" end="$" oneline
+"syn region asciidocExampleBlock start="^====\+$" end="^====\+$"
+syn match asciidocExampleBlockDelimiter "^====\+$"
+syn region asciidocFilterBlock start="^\w\+\~\~\~\~\+$" end="^\w\+\~\~\~\~\+$"
+syn match asciidocListBlockDelimiter "^--$"
+syn region asciidocListingBlock start="^----\+$" end="^----\+$" contains=asciidocCallout
+syn region asciidocLiteralBlock start="^\.\.\.\.\+$" end="^\.\.\.\.\+$" contains=asciidocCallout
+syn region asciidocPassthroughBlock start="^++++\+$" end="^++++\+$"
+"syn region asciidocQuoteBlock start="^____\+$" end="^____\+$"
+syn match asciidocQuoteBlockDelimiter "^____\+$"
+"syn region asciidocSidebarBlock start="^\*\*\*\*\+$" end="^\*\*\*\*\+$"
+syn match asciidocSidebarBlockDelimiter "^\*\*\*\*\+$"
+
+" FIXME: The tricky part is not triggering on indented list items that are also
+" preceeded by blank line, handles only bulleted items (see 'Limitations' above
+" for workarounds).
+syn region asciidocLiteralParagraph start="^\n[ \t]\+\(\([^-*. \t] \)\|\(\S\S\)\)" end="\(^+\?\s*$\)\@="
+
+"Tables
+syn region asciidocTable start="^\([`.']\d*[-~_]*\)\+[-~_]\+\d*$" end="^$"
+
+"Comments
+syn match asciidocCommentLine "^\s*//\([^/].*\|\)$" contains=asciidocToDo
 syn region asciidocCommentBlock start="^////\+\s*$" end="^////\+\s*$" contains=asciidocTodo
-syn region asciidocListingBlock start="^---\+$" end="^---\+$"
-syn region asciidocLiteralBlock start="^\.\.\.\+$" end="^\.\.\.\+$"
-syn region asciidocSidebarBlock start="^\*\*\*\+$" end="^\*\*\*\+$"
-syn region asciidocQuoteBlock start="^___\+$" end="^___\+$"
-syn region asciidocSourceBlock start="^source\~\~\~\+$" end="^source\~\~\~\+$"
-syn region asciidocMusicBlock start="^music\~\~\~\+$" end="^music\~\~\~\+$"
-syn region asciidocExampleBlock start="^===\+$" end="^===\+$"
-syn region asciidocBlockTitle start="^\." end="$" oneline
 
-if version <= 508 || !exists("did_asciidoc_syntax_inits")
-  if version < 508
-    let did_asciidoc_syntax_inits = 1
-  endif
+"Styles
+highlight asciidocBold term=bold cterm=bold gui=bold
+highlight asciidocEmphasize term=italic ctermfg=darkgreen guifg=darkgreen gui=italic
+highlight asciidocMonospace term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocSubscript term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocSuperscript term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocAttributeEntry term=standout ctermfg=darkgreen guifg=darkgreen
+highlight asciidocAttributeList term=standout ctermfg=darkgreen guifg=darkgreen
+highlight asciidocAdmonitionNote term=reverse ctermfg=white ctermbg=green guifg=white guibg=green
+highlight asciidocAdmonitionWarn term=reverse ctermfg=white ctermbg=red guifg=white guibg=red
+highlight asciidocTodo term=reverse ctermfg=black ctermbg=yellow guifg=black guibg=yellow
+highlight asciidocReference term=underline ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocFootnote term=underline ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocDefinition term=underline ctermfg=darkgreen cterm=underline guifg=darkgreen gui=underline
+highlight asciidocQuestion term=underline ctermfg=darkgreen cterm=underline guifg=darkgreen gui=underline
+highlight asciidocGlossary term=underline ctermfg=darkgreen cterm=underline guifg=darkgreen gui=underline
+highlight asciidocMacro term=standout ctermfg=darkred guifg=darkred
+highlight asciidocSpecialChar term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocSource term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocPassthrough term=underline ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocInclude term=underline ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocBackslash ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocIdMarker ctermfg=darkred guifg=darkred
+highlight asciidocReplacements term=standout ctermfg=darkcyan guifg=darkcyan
+highlight asciidocBiblio term=bold ctermfg=cyan guifg=darkcyan gui=bold
 
-  "Styles
-  hi asciidocBold term=bold cterm=bold gui=bold
-  hi asciidocEmphasize term=italic ctermfg=darkgreen guifg=darkgreen
-  hi asciidocMonospace term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocAttribute term=standout ctermfg=darkgreen guifg=darkgreen
-  hi asciidocAttributeList term=standout ctermfg=darkgreen guifg=darkgreen
-  hi asciidocBlockTitle term=standout ctermfg=darkgreen guifg=darkgreen
-  hi asciidocAdmonitionNote term=reverse ctermfg=white ctermbg=green guifg=white guibg=green
-  hi asciidocAdmonitionWarn term=reverse ctermfg=white ctermbg=red guifg=white guibg=red
-  hi asciidocTodo term=reverse ctermfg=black ctermbg=yellow guifg=black guibg=yellow
-  hi asciidocReference term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocFootnote term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocDefinition term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocGlossary term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocMacro term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocSpecialChar term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocSource term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocPassthrough term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocInclude term=underline ctermfg=darkmagenta guifg=darkmagenta
+"Lists
+highlight asciidocListBullet ctermfg=darkcyan guifg=darkcyan gui=bold
+highlight asciidocListContinuation ctermfg=darkcyan guifg=darkcyan gui=bold
+highlight asciidocListNumber ctermfg=darkcyan guifg=darkcyan gui=bold
 
-  "Lists
-  hi asciidocBullet term=bold ctermfg=cyan guifg=cyan
-  hi asciidocNumItem term=bold ctermfg=cyan guifg=cyan
-  hi asciidocBiblio term=bold ctermfg=cyan guifg=cyan
+"Sections
+highlight asciidocSect0 term=underline ctermfg=darkmagenta cterm=bold,underline guifg=darkmagenta gui=bold,underline
+highlight asciidocSect1 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+highlight asciidocSect2 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+highlight asciidocSect3 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+highlight asciidocSect4 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+highlight asciidocSect0Old term=underline ctermfg=darkmagenta cterm=bold guifg=darkmagenta gui=bold
+highlight asciidocSect1Old term=underline ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocSect2Old term=underline ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocSect3Old term=underline ctermfg=darkmagenta guifg=darkmagenta
+highlight asciidocSect4Old term=underline ctermfg=darkmagenta guifg=darkmagenta
 
-  "Sections
-  hi asciidocSect0 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
-  hi asciidocSect1 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
-  hi asciidocSect2 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
-  hi asciidocSect3 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
-  hi asciidocSect4 term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
-  hi asciidocSectOld0 term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocSectOld1 term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocSectOld2 term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocSectOld3 term=underline ctermfg=darkmagenta guifg=darkmagenta
-  hi asciidocSectOld4 term=underline ctermfg=darkmagenta guifg=darkmagenta
+"Links
+highlight asciidocEmail term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+highlight asciidocLink term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+highlight asciidocURI term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+highlight asciidocURITitle term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
 
-  "Links
-  hi asciidocEmail term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
-  hi asciidocLink term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
-  hi asciidocURI term=underline ctermfg=darkmagenta cterm=underline guifg=darkmagenta gui=underline
+"Blocks
+highlight asciidocBlockTitle term=underline ctermfg=darkgreen cterm=underline guifg=darkgreen gui=underline
+highlight asciidocExampleBlockDelimiter term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocListingBlock term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocLiteralBlock term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocLiteralParagraph term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocFilterBlock term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocQuoteBlockDelimiter term=standout ctermfg=darkyellow guifg=darkyellow
+highlight asciidocSidebarBlockDelimiter term=standout ctermfg=darkyellow guifg=darkyellow
 
-  "Blocks
-  hi asciidocBlock term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocExampleBlock term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocListingBlock term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocLiteralBlock term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocMusicBlock term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocQuoteBlock term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocSidebarBlock term=standout ctermfg=darkyellow guifg=darkyellow
-  hi asciidocSourceBlock term=standout ctermfg=darkyellow guifg=darkyellow
+"Tables
+highlight asciidocTable term=standout ctermfg=darkyellow guifg=darkyellow
 
-  "Comments
-  hi asciidocComment term=standout ctermfg=darkblue guifg=darkblue
-  hi asciidocCommentBlock term=standout ctermfg=darkblue guifg=darkblue
-endif
+"Comments
+highlight asciidocCommentBlock term=standout ctermfg=darkblue guifg=darkblue
+highlight asciidocCommentLine term=standout ctermfg=darkblue guifg=darkblue
+
+"Macros
+"highlight link asciidocAnchorMacro Macro
+highlight asciidocAnchorMacro term=standout ctermfg=darkred guifg=darkred
+highlight link asciidocIndexTerm Macro
+"highlight link asciidocMacro Macro
+"highlight link asciidocMacroAttributes Label
+highlight asciidocMacroAttributes term=underline ctermfg=darkyellow cterm=underline guifg=darkyellow gui=underline
+"highlight link asciidocRefMacro Macro
+highlight asciidocRefMacro term=standout ctermfg=darkred guifg=darkred
+
+"Other
+highlight link asciidocCallout Label
+highlight link asciidocRuler Type
+highlight link asciidocLineBreak Special
 
 let b:current_syntax = "asciidoc"
+
+set listchars=tab:»·,trail:·
+set list
 
 "eof
