@@ -1,6 +1,9 @@
 " Vim syntax file
 " Language: Asciidoc text document
-" Maintainer: Dag Wieers <dag@wieers.com>
+" Maintainer: Dag Wieers <dag@wieers.com> (merged wih Stuart Rackham's
+"             upstream asciidoc.vim script).
+" URL: http://www.methods.co.nz/asciidoc/
+" License: GPL (http://www.gnu.org)
 " Last Change:»·$Date: 2007/07/18 16:11:12 $
 " $Revision$
 
@@ -15,20 +18,36 @@ syn sync linebreaks=1
 
 syn match asciidocCallout "<\d\d\?>"
 syn match asciidocBackslash "\\"
-syn match asciidocIdMarker "^$Id:\s\S\+\s\$$"
 syn match asciidocLineBreak "[ \t]+$"
 syn match asciidocRuler "^''''\+$"
 
-syn match asciidocBold "\*[^*]\+\*"
-syn match asciidocEmphasize "_[^_]\+_"
+" As a damage control measure quoted patterns always terminate at a blank
+" line (see 'Limitations' above).
+syn region asciidocMonospace start="\(^\|[ \t(\[.,]\)\@<=+\([)]\)\@!" end="\(+\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocMonospace start="\(^\|[ \t(\[.,]\)\@<=`\([)]\)\@!" end="\(`\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocMonospace start="++\S" end="\(++\|^$\)"
+"syn match asciidocMonospace "+[^+]\++"
+"syn match asciidocMonospace "`[^`]\+`"
+syn region asciidocEmphasize start="\(^\|[ \t(\[.,]\)\@<=_\([)]\)\@!" end="\(_\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocEmphasize start="\(^\|[ \t(\[.,]\)\@<='\([)]\)\@!" end="\('\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocEmphasize start="__\S" end="\(__\|^$\)"
+"syn match asciidocEmphasize "_[^_]\+_"
 "FIXME: Emphasizing using single quotes is prone to failure, so we disable it.
-"syn match asciidocEmphasize "'[^']\+'"
 "syn region asciidocEmphasize start="\'[^\']"  end="\'\([^\']\|$\)"
-syn match asciidocMonospace "+[^+]\++"
-syn match asciidocMonospace "`[^`]\+`"
+"syn match asciidocEmphasize "'[^']\+'"
+syn region asciidocBold start="\(^\|[ \t(\[.,]\)\@<=\*\([ )]\)\@!" end="\(\*\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocBold start="\*\*\S" end="\(\*\*\|^$\)"
+"syn match asciidocBold "\*[^*]\+\*"
+syn region asciidocQuoted start="\(^\|[ \t(\[.,]\)\@<=``\([ )]\)\@!" end="\(''\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
 syn region asciidocSubscript start="\~\S" end="\(\~\|^$\)"
 syn region asciidocSuperscript start="\^\S" end="\(\^\|^$\)"
-syn match asciidocPassthrough "\$\$.\+\$\$"
+"syn match asciidocPassthrough "\$\$.\+\$\$"
+"syn match asciidocPassthrough "+++[^+]\++++"
+syn region asciidocPassthrough start="\(^\|\W\)\@<=\$\$\S" end="\(\$\$\(\W\|$\)\@=\|^$\)"
+syn region asciidocPassthrough start="\(^\|\W\)\@<=+++\S" end="\(+++\(\W\|$\)\@=\|^$\)"
+
+syn match asciidocRevisionInfo "\$\w\+\(:\s.\+\s\)\?\$"
+
 syn match asciidocBiblio "^\s*+\s\+"
 syn match asciidocSource "^\s\s*\$\s\+.\+$"
 syn keyword asciidocTodo TODO FIXME XXX ZZZ contained
@@ -39,6 +58,10 @@ syn match asciidocAdmonitionNote "^\(NOTE\|TIP\):\(\s\+.*\)\@="
 syn match asciidocAdmonitionWarn "^\(CAUTION\|IMPORTANT\|WARNING\):\(\s\+.*\)\@="
 syn match asciidocAdmonitionNote "^\[\(NOTE\|TIP\)\]\s*$"
 syn match asciidocAdmonitionWarn "^\[\(CAUTION\|IMPORTANT\|WARNING\)\]\s*$"
+syn region asciidocVLabel start="^\s*" end="\S\(::\|;;\|:-\|??\)$" oneline
+syn region asciidocHLabel start="^\s*" end="\S\(::\|;;\)\s\+" oneline
+syn region asciidocDoubleDollarPassthrough start="\(^\|\W\)\@<=\$\$\S" end="\(\$\$\(\W\|$\)\@=\|^$\)"
+syn region asciidocTriplePlusPassthrough start="\(^\|\W\)\@<=+++\S" end="\(+++\(\W\|$\)\@=\|^$\)"
 
 "Attributes
 syn region asciidocAttributeEntry start="^:\a" end=":\(\s\|$\)" oneline
@@ -53,16 +76,18 @@ syn region asciidocMacroAttributes matchgroup=asciidocAnchorMacro start="\[\[\(\
 syn region asciidocMacroAttributes matchgroup=asciidocAnchorMacro start="\[\[\[\(\w\|-\)\+" end="\]\]\]"
 syn region asciidocMacroAttributes matchgroup=asciidocMacro start="\w\(\w\|-\)*:\S\{-}\[" skip="\\\]" end="\]"
 syn region asciidocMacroAttributes matchgroup=asciidocIndexTerm start="(((?" end=")))\?"
+syn match asciidocMacroAttributes "\w\(\w\|-\)*:\S\{-}\[\]"
 "syn match asciidocMacro "\[\[.*\]\]"
 "syn match asciidocMacro "((.*))"
 "syn match asciidocReference "<<\w\+>>"
 "syn match asciidocReference "<<\w\+,.\+>>"
 
 "Lists
+syn match asciidocListBlockDelimiter "^--$"
 syn match asciidocListBullet "^\s*[*+-]\s"
 syn match asciidocListContinuation "^+$"
 "syn match asciidocListNumber "^\s*\d\+[.)]\s"
-syn match asciidocListNumber /^\s*\(\d*\.\.\?\|\l\?)\|\w\.\)\s\+/
+syn match asciidocListNumber "^\s*\(\d*\.\.\?\|\l\?)\|\w\.\)\s\+"
 
 "Sections
 syn region asciidocSect0 start="^=\s\+\S" end="$" oneline
@@ -105,7 +130,6 @@ syn match asciidocBlockTitle "^\.[^. \t].*[^-~_]$"
 "syn region asciidocExampleBlock start="^====\+$" end="^====\+$"
 syn match asciidocExampleBlockDelimiter "^====\+$"
 syn region asciidocFilterBlock start="^\w\+\~\~\~\~\+$" end="^\w\+\~\~\~\~\+$"
-syn match asciidocListBlockDelimiter "^--$"
 syn region asciidocListingBlock start="^----\+$" end="^----\+$" contains=asciidocCallout
 syn region asciidocLiteralBlock start="^\.\.\.\.\+$" end="^\.\.\.\.\+$" contains=asciidocCallout
 syn region asciidocPassthroughBlock start="^++++\+$" end="^++++\+$"
@@ -132,8 +156,6 @@ highlight asciidocEmphasize term=italic ctermfg=darkgreen guifg=darkgreen gui=it
 highlight asciidocMonospace term=standout ctermfg=darkyellow guifg=darkyellow
 highlight asciidocSubscript term=standout ctermfg=darkyellow guifg=darkyellow
 highlight asciidocSuperscript term=standout ctermfg=darkyellow guifg=darkyellow
-highlight asciidocAttributeEntry term=standout ctermfg=darkgreen guifg=darkgreen
-highlight asciidocAttributeList term=standout ctermfg=darkgreen guifg=darkgreen
 highlight asciidocAdmonitionNote term=reverse ctermfg=white ctermbg=green guifg=white guibg=green
 highlight asciidocAdmonitionWarn term=reverse ctermfg=white ctermbg=red guifg=white guibg=red
 highlight asciidocTodo term=reverse ctermfg=black ctermbg=yellow guifg=black guibg=yellow
@@ -148,9 +170,14 @@ highlight asciidocSource term=standout ctermfg=darkyellow guifg=darkyellow
 highlight asciidocPassthrough term=underline ctermfg=darkmagenta guifg=darkmagenta
 highlight asciidocInclude term=underline ctermfg=darkmagenta guifg=darkmagenta
 highlight asciidocBackslash ctermfg=darkmagenta guifg=darkmagenta
-highlight asciidocIdMarker ctermfg=darkred guifg=darkred
 highlight asciidocReplacements term=standout ctermfg=darkcyan guifg=darkcyan
 highlight asciidocBiblio term=bold ctermfg=cyan guifg=darkcyan gui=bold
+highlight asciidocRevisionInfo term=standout ctermfg=blue guifg=darkblue gui=bold
+
+"Attributes
+highlight asciidocAttributeEntry term=standout ctermfg=darkgreen guifg=darkgreen
+highlight asciidocAttributeList term=standout ctermfg=darkgreen guifg=darkgreen
+highlight asciidocAttributeRef term=standout ctermfg=darkgreen guifg=darkgreen
 
 "Lists
 highlight asciidocListBullet ctermfg=darkcyan guifg=darkcyan gui=bold
@@ -206,6 +233,9 @@ highlight asciidocRefMacro term=standout ctermfg=darkred guifg=darkred
 highlight link asciidocCallout Label
 highlight link asciidocRuler Type
 highlight link asciidocLineBreak Special
+highlight link asciidocVLabel Label
+highlight link asciidocHLabel Label
+highlight link asciidocQuoted Label
 
 let b:current_syntax = "asciidoc"
 
