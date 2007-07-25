@@ -60,8 +60,6 @@ syn match asciidocAdmonitionNote "^\[\(NOTE\|TIP\)\]\s*$"
 syn match asciidocAdmonitionWarn "^\[\(CAUTION\|IMPORTANT\|WARNING\)\]\s*$"
 syn region asciidocVLabel start="^\s*" end="\S\(::\|;;\|:-\|??\)$" oneline
 syn region asciidocHLabel start="^\s*" end="\S\(::\|;;\)\s\+" oneline
-syn region asciidocDoubleDollarPassthrough start="\(^\|\W\)\@<=\$\$\S" end="\(\$\$\(\W\|$\)\@=\|^$\)"
-syn region asciidocTriplePlusPassthrough start="\(^\|\W\)\@<=+++\S" end="\(+++\(\W\|$\)\@=\|^$\)"
 
 "Attributes
 syn region asciidocAttributeEntry start="^:\a" end=":\(\s\|$\)" oneline
@@ -77,6 +75,7 @@ syn region asciidocMacroAttributes matchgroup=asciidocAnchorMacro start="\[\[\[\
 syn region asciidocMacroAttributes matchgroup=asciidocMacro start="\w\(\w\|-\)*:\S\{-}\[" skip="\\\]" end="\]"
 syn region asciidocMacroAttributes matchgroup=asciidocIndexTerm start="(((?" end=")))\?"
 syn match asciidocMacroAttributes "\w\(\w\|-\)*:\S\{-}\[\]"
+"syn region asciidocMacroAttributes matchgroup=asciidocMacro start="\w\(\w\|-\)*:\S\{-}\[" end="\]"
 "syn match asciidocMacro "\[\[.*\]\]"
 "syn match asciidocMacro "((.*))"
 "syn match asciidocReference "<<\w\+>>"
@@ -239,7 +238,15 @@ highlight link asciidocQuoted Label
 
 let b:current_syntax = "asciidoc"
 
+"Show tab and trailing characters
 set listchars=tab:»·,trail:·
 set list
+
+"
+"set textwidth=78 formatoptions=tcqn autoindent
+set formatoptions=tcqn autoindent
+set comments=s1:/*,ex:*/,://,b:#,:%,fb:-,fb:*,fb:.,fb:+,fb:>
+
+nnoremap Q gq}
 
 "eof
