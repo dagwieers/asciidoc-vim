@@ -23,22 +23,22 @@ syn match asciidocRuler "^''''\+$"
 
 " As a damage control measure quoted patterns always terminate at a blank
 " line (see 'Limitations' above).
-syn region asciidocMonospace start="\(^\|[ \t(\[.,]\)\@<=+\([)]\)\@!" end="\(+\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
-syn region asciidocMonospace start="\(^\|[ \t(\[.,]\)\@<=`\([)]\)\@!" end="\(`\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocMonospace start="\(^\|[ \t(\[.,\-]\)\@<=+\([)]\)\@!" end="\(+\([ \t)\],.?!;:\-]\|$\)\@=\|^$\)"
+syn region asciidocMonospace start="\(^\|[ \t(\[.,\-]\)\@<=`\([)]\)\@!" end="\(`\([ \t)\],.?!;:\-]\|$\)\@=\|^$\)"
 syn region asciidocMonospace start="++\S" end="\(++\|^$\)"
 "syn match asciidocMonospace "+[^+]\++"
 "syn match asciidocMonospace "`[^`]\+`"
-syn region asciidocEmphasize start="\(^\|[ \t(\[.,]\)\@<=_\([)]\)\@!" end="\(_\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
-syn region asciidocEmphasize start="\(^\|[ \t(\[.,]\)\@<='\([)]\)\@!" end="\('\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocEmphasize start="\(^\|[ \t(\[.,\-]\)\@<=_\([)]\)\@!" end="\(_\([ \t)\],.?!;:\-]\|$\)\@=\|^$\)"
+syn region asciidocEmphasize start="\(^\|[ \t(\[.,\-]\)\@<='\([)]\)\@!" end="\('\([ \t)\],.?!;:\-]\|$\)\@=\|^$\)"
 syn region asciidocEmphasize start="__\S" end="\(__\|^$\)"
 "syn match asciidocEmphasize "_[^_]\+_"
 "FIXME: Emphasizing using single quotes is prone to failure, so we disable it.
 "syn region asciidocEmphasize start="\'[^\']"  end="\'\([^\']\|$\)"
 "syn match asciidocEmphasize "'[^']\+'"
-syn region asciidocBold start="\(^\|[ \t(\[.,]\)\@<=\*\([ )]\)\@!" end="\(\*\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocBold start="\(^\|[ \t(\[.,\-]\)\@<=\*\([ )]\)\@!" end="\(\*\([ \t)\],.?!;:\-]\|$\)\@=\|^$\)"
 syn region asciidocBold start="\*\*\S" end="\(\*\*\|^$\)"
 "syn match asciidocBold "\*[^*]\+\*"
-syn region asciidocQuoted start="\(^\|[ \t(\[.,]\)\@<=``\([ )]\)\@!" end="\(''\([ \t)\],.?!;:]\|$\)\@=\|^$\)"
+syn region asciidocQuoted start="\(^\|[ \t(\[.,\-]\)\@<=``\([ )]\)\@!" end="\(''\([ \t)\],.?!;:\-]\|$\)\@=\|^$\)"
 syn region asciidocSubscript start="\~\S" end="\(\~\|^$\)"
 syn region asciidocSuperscript start="\^\S" end="\(\^\|^$\)"
 "syn match asciidocPassthrough "\$\$.\+\$\$"
@@ -245,7 +245,14 @@ set list
 "
 "set textwidth=78 formatoptions=tcqn autoindent
 set formatoptions=tcqn autoindent
+"Prevent simple numbers at the start of lines to be confused with list items:
+set formatlistpat=^\\s*\\d\\+\\.\\s\\+
 set comments=s1:/*,ex:*/,://,b:#,:%,fb:-,fb:*,fb:.,fb:+,fb:>
+
+"Typing "" inserts a pair of quotes (``'') and places the cursor between
+"them. Works in both insert and command mode (switching to insert mode):
+imap "" ``''<ESC>hi
+map "" i""
 
 nnoremap Q gq}
 
