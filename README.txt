@@ -2,6 +2,18 @@
 Dag Wieers <dag@wieers.com>
 
 
+== Difference with 'official' syntax file
+While this syntax file was independently developed, it was later merged
+with improved regular expressions taken from the upstream syntax file.
+
+ - Bold is *bold*, Emphasize is _italic_
+ - Document title stands out (in bold)
+ - Titles are underlined
+ - Better and more colors facilitate reading and editing
+ - Links and email addresses are underlined
+ - Admonitions look nicer
+
+
 == Installing the asciidoc.vim file
 Put the _asciidoc.vim_ syntax file in your home directory at
 _~/.vim/syntax/asciidoc.vim_. That should be sufficient to have AsciiDoc
@@ -21,6 +33,7 @@ the end of your AsciiDoc files:
 // vim: set syntax=asciidoc:
 ----
 
+
 == Testing VIM syntax files
 The syntax file considers 3 different environments.
 
@@ -39,7 +52,7 @@ definitions. To test each of these on a capable terminal, try:
 == Known shortcomings
 There are a few quirks in the syntax files. Here is an overview:
 
-Underlining titles does not work consistently???
+Underlining titles does not work consistently??
 
     There is no way that we can match the length of a title with the length of
     the line under it. Because of that every line preceded by text could

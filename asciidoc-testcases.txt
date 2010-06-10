@@ -1,0 +1,67 @@
+= Asciidoc syntax test document
+
+== Emphasizing and quoting
+Emphasized, bold etc. text preceded or followed by dashes is handled
+correctly:
+
+- *bold*, --*bold*, *bold*--bla*nonbold*.
+- _emph_, --_emph_, _emph_--bla_nonemph_.
+- +mono+, --+mono+, +mono+--bla+nonmono+.
+- `mono`, --`mono`, `mono`--bla`nonmono`.
+- ``quot'', --``quot'', ``quot''--bla``nonquot''.
+
+*Emphasizing a complete multi-line paragraph should be possible too ! And
+So it will be...*
+
+== Lists
+Correct indentation: simple numbers at the start of lines should not be
+confused with list items. These are numbered lists, so lines following a
+list item should be indented:
+
+. Integer numbered list item. Lorem ipsum dolor sit amet, consectetuer
+  adipiscing elit.
+1. Integer numbered list item with optional numbering. Lorem ipsum dolor
+   sit amet, consectetuer adipiscing elit.
+12. Integer numbered list item with optional numbering. Lorem ipsum dolor
+    sit amet, consectetuer adipiscing elit.
+
+But these are just numbers that happen to occur at the start of a line and
+should not trigger indentation:
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Fusce euismod od
+1 commodo velit. Qui in magna commodo, est labitur dolorum an. Est ne magna
+primis. Sit munere ponderum dignissim et. Minim luptatum et vel. Vivamus
+12.5. mi eu lacus. Donec eget arcu bibendum nunc consequat lobortis. Lorem
+ipsum dolor sit amet, consectetuer adipiscing elit. Fusce euismod commodo
+
+// Comments are taken care off as well //
+== Blocks
+Many ways to make $$blocks$$
+
+////
+And even comment blocks do well
+////
+
+== Admonitions
+WARNING: Admonitions have a special meaning too.
+
+[NOTE]
+Also when used in block mode.
+
+== Definitions
+
+Definition 1::
+    This is it
+Definition 2::
+    This is it too
+
+== Inserting quotes
+Typing "" inserts a pair of quotes (``'') and places the cursor between
+them. Works in both insert and command mode (switching to insert mode).
+Typing a single " works as usual (though with a slight delay).
+
+== URLs and email addresses
+So when using a URL like http://dag.wieers.com/[Test] it needs to stand out,
+same is true for email addresses like dag@wieers.com
+
+// vim: set syntax=asciidoc:
