@@ -2,7 +2,7 @@
 Dag Wieers <dag@wieers.com>
 
 
-== Difference with 'official' syntax file
+== Difference with upstream syntax file
 While this syntax file was independently developed, it was later merged
 with improved regular expressions taken from the upstream syntax file.
 
@@ -12,6 +12,10 @@ with improved regular expressions taken from the upstream syntax file.
  - Better and more colors facilitate reading and editing
  - Links and email addresses are underlined
  - Admonitions look nicer
+
+The reason why this syntax file looks better is because it does not stick
+to the provided styles (that mostly maps to programming languages and
+therefor is pretty limited).
 
 
 == Installing the asciidoc.vim file
@@ -32,6 +36,9 @@ the end of your AsciiDoc files:
 ----
 // vim: set syntax=asciidoc:
 ----
+
+Or install the +asciidoc_filetype.vim+ filetype detection script in
+_~/.vim/ftdetect/asciidoc_filetype.vim_.
 
 
 == Testing VIM syntax files
@@ -54,11 +61,15 @@ There are a few quirks in the syntax files. Here is an overview:
 
 Underlining titles does not work consistently??
 
-    There is no way that we can match the length of a title with the length of
-    the line under it. Because of that every line preceded by text could
-    ambigously be interpreted as either a title or the start of a block. Use
-    the wiki-style syntax for titles. (used by this document)
+There is no way that we can match the length of a title with the length of
+the line under it. Because of that every line preceded by text could
+ambigously be interpreted as either a title or the start of a block. Use
+the wiki-style syntax for titles. (used by this document)
 
+Some asciidoc syntax is not implemented??
+
+Yes, certain newer syntax rules have not been implemented yet, as is the case
+with the upstream version.
 
 == Feedback
 If you have fixes or improvements to the syntax file, please send them to:

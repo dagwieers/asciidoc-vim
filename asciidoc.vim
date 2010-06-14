@@ -37,6 +37,7 @@ syn match asciidocURL /\\\@<!\<\(http\|https\|ftp\|file\|irc\):\/\/[^| \t]*\(\w\
 syn match asciidocEmail /[\\.:]\@<!\(\<\|<\)\w\(\w\|[.-]\)*@\(\w\|[.-]\)*\w>\?[0-9A-Za-z_]\@!/
 syn match asciidocAttributeRef /\\\@<!{\w\(\w\|-\)*\([=!@#$%?:].*\)\?}/
 
+
 " As a damage control measure quoted patterns always terminate at a blank
 " line (see 'Limitations' above).
 syn match asciidocQuotedSubscript /\\\@<!\~\S\_.\{-}\(\~\|\n\s*\n\)/
@@ -114,23 +115,22 @@ syn region asciidocHLabel start=/^\s*/ end=/\(::\|;;\)\(\s\+\|\\$\)/ oneline con
 " Starts with any of the above.
 syn region asciidocList start=/^\s*\(-\|\*\{1,5}\)\s/ start=/^\s*\(\(\d\+\.\)\|\.\{1,5}\|\(\a\.\)\|\([ivxIVX]\+)\)\)\s\+/ start=/.\+\(:\{2,4}\|;;\)$/ end=/\(^[=*]\{4,}$\)\@=/ end=/\(^+\?\s*$\)\@=/ contains=asciidocList.\+,asciidocQuoted.*,asciidocMacroAttributes,asciidocAttributeRef,asciidocEntityRef,asciidocEmail,asciidocURL,asciidocBackslash,asciidocCommentLine,asciidocAttributeList
 
-
 "====================== OLD STUFF ============================
 
 "Sections
-syn region asciidocSect0 start="^=\s\+\S" end="$" oneline
-syn region asciidocSect1 start="^==\s\+\S" end="$" oneline
-syn region asciidocSect2 start="^===\s\+\S" end="$" oneline
-syn region asciidocSect3 start="^====\s\+\S" end="$" oneline
-syn region asciidocSect4 start="^=====\s\+\S" end="$" oneline
+syn region asciidocSect0 start=/^=\s\+\S/ end=/$/ oneline contains=asciidocQuoted.*,asciidocAttributeRef
+syn region asciidocSect1 start=/^==\s\+\S/ end=/$/ oneline contains=asciidocQuoted.*,asciidocAttributeRef
+syn region asciidocSect2 start=/^===\s\+\S/ end=/$/ oneline contains=asciidocQuoted.*,asciidocAttributeRef
+syn region asciidocSect3 start=/^====\s\+\S/ end=/$/ oneline contains=asciidocQuoted.*,asciidocAttributeRef
+syn region asciidocSect4 start=/^=====\s\+\S/ end=/$/ oneline contains=asciidocQuoted.*,asciidocAttributeRef
 
 "FIXME: It is impossible to distinguish underlined titles from block delimiters
 "       because we cannot calculate length in VIM syntax
-syn match asciidocSect0Old "^[^. +/[].*[^.:]\n==\+$"
-syn match asciidocSect1Old "^[^. +/[].*[^.:]\n--\+$"
-syn match asciidocSect2Old "^[^. +/[].*[^.:]\n\~\~\+$"
-syn match asciidocSect3Old "^[^. +/[].*[^.:]\n^^\+$"
-syn match asciidocSect4Old "^[^. +/[].*[^.:]\n++\+$"
+syn match asciidocSect0Old /^[^. +/[].*[^.:]\n==\+$/ contains=asciidocQuoted.*,asciidocAttributeRef
+syn match asciidocSect1Old /^[^. +/[].*[^.:]\n--\+$/ contains=asciidocQuoted.*,asciidocAttributeRef
+syn match asciidocSect2Old /^[^. +/[].*[^.:]\n\~\~\+$/ contains=asciidocQuoted.*,asciidocAttributeRef
+syn match asciidocSect3Old /^[^. +/[].*[^.:]\n^^\+$/ contains=asciidocQuoted.*,asciidocAttributeRef
+syn match asciidocSect4Old /^[^. +/[].*[^.:]\n++\+$/ contains=asciidocQuoted.*,asciidocAttributeRef
 
 "Others
 syn match asciidocReplacements "[\s^]\(\(C\)\|\(TM\)\|\(R\)\|--\|\.\.\.\)[\s$]"
@@ -189,7 +189,8 @@ highlight asciidocTripplePlusPassthrough term=underline ctermfg=darkmagenta guif
 highlight asciidocAttributeEntry term=standout ctermfg=darkgreen guifg=darkgreen
 highlight asciidocAttributeList term=standout ctermfg=darkgreen guifg=darkgreen
 highlight link asciidocAttributeMacro Macro
-highlight asciidocAttributeRef term=standout ctermfg=darkgreen guifg=darkgreen
+"highlight asciidocAttributeRef term=standout ctermfg=darkgreen cterm=bold guifg=darkgreen gui=bold
+highlight asciidocAttributeRef term=standout,underline ctermfg=darkgreen cterm=bold,underline guifg=darkgreen gui=bold,underline
 
 "Lists
 highlight asciidocListBlockDelimiter term=bold ctermfg=darkcyan cterm=bold guifg=darkcyan gui=bold
